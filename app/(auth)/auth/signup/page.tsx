@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -50,7 +51,9 @@ export default async function SignupPage() {
             </p>
           </div>
 
-          <UserSignupForm />
+          <Suspense>
+            <UserSignupForm />
+          </Suspense>
 
           <p className="px-8 text-center text-sm text-muted-foreground">
             {`By clicking continue, you agree to our `}

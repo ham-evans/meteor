@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
 import { userSignupSchema, UserSignupType } from "@/lib/validations/user";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export function UserSignupForm() {
       email: values.email,
       password: values.password,
       options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
+        emailRedirectTo: `${env.NEXT_PUBLIC_URL}/auth/callback`,
         data: {
           full_name: values.name,
         },

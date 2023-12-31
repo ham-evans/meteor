@@ -13,10 +13,12 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_CRISP_WEBSITE_ID: z.string().min(1),
     NEXT_PUBLIC_APP_URL: z.string().min(1),
+    NEXT_PUBLIC_URL: z.string().min(1),
   },
   runtimeEnv: {
     // Supabase
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     // Lemon Squeezy
