@@ -1,20 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import {
-  Atom,
-  Component,
-  CreditCard,
-  Globe,
-  LogIn,
-  Mail,
-  Replace,
-  RotateCcw,
-  Sun,
-  Type,
-} from "lucide-react";
 
 import { routes } from "@/config/routes";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,8 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DemoVideoSection } from "@/components/demo-video";
-import LemonButton from "@/components/lemon-button";
 
 export default function LandingPage() {
   return (
