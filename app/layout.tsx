@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 
-import dynamic from "next/dynamic";
 import Script from "next/script";
 
 import { fontHeading, fontSans } from "@/lib/fonts";
@@ -13,8 +12,6 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  const CrispWithNoSSR = dynamic(() => import("@/components/providers/crisp"));
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -28,7 +25,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
           <Toaster />
-          <CrispWithNoSSR />
         </ThemeProvider>
         <Script src="https://api.meteor.com/latest.js" />
         <noscript>
