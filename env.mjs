@@ -11,7 +11,6 @@ export const env = createEnv({
     LEMON_SQUEEZY_WEBHOOK_SECRET: z.string().min(1),
   },
   client: {
-    NEXT_PUBLIC_CRISP_WEBSITE_ID: z.string().min(1),
     NEXT_PUBLIC_APP_URL: z.string().min(1),
     NEXT_PUBLIC_URL: z.string().min(1),
   },
@@ -24,7 +23,5 @@ export const env = createEnv({
     // Lemon Squeezy
     LEMON_SQUEEZY_API_KEY: process.env.LEMON_SQUEEZY_API_KEY,
     LEMON_SQUEEZY_WEBHOOK_SECRET: process.env.LEMON_SQUEEZY_WEBHOOK_SECRET,
-    // Crisp
-    NEXT_PUBLIC_CRISP_WEBSITE_ID: process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID,
   },
 });
