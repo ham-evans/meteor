@@ -1,117 +1,64 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import React, { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebounce } from "use-debounce";
 
-import {
-  createContactSchema,
-  CreateContactType,
-} from "@/lib/validations/contact";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-export function SearchPapers() {
-  const router = useRouter();
-  const [search, setSearch] = useState(false);
+export default function Search() {
+  const { push, refresh } = useRouter();
+  const path = usePathname();
 
-  const form = useForm<CreateContactType>({
-    resolver: zodResolver(createContactSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-    },
-  });
+  const searchParams = useSearchParams();
+  const initSearch = useSearchParams().get("search");
 
-  const onSubmit = async (values: CreateContactType) => {
-    const payload: CreateContactType = {
-      name: values.name,
-      email: values.email,
-    };
+  // search params w/out the agency (and removing leading & if agency is removed)
+  const params = searchParams
+    .toString()
+    .replace(`search=${initSearch?.replaceAll(" ", "+")}`, "")
+    .replace(/^&+/, "");
 
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+  const initialRender = useRef(true);
 
-    const result = await response.json();
+  // could move mounted to a hook
+  const [mounted, setMounted] = useState(false);
+  const [searchValue, setSearchValue] = useState(initSearch || "");
+  const [query] = useDebounce(searchValue, 500);
 
-    if (result.error) {
-      return toast.error(result.error);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Search / params were getting wiped on hard reload (or page hit with params)
+    if (!mounted) return;
+
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
     }
+    if (query)
+      push(`${path ? path : ""}?search=${query}${params ? `&${params}` : ""}`);
+    else {
+      push(`${path}${params ? `?${params}` : ""}`);
+      refresh();
+    }
+  }, [query, push, refresh, mounted, params, path]);
 
-    router.refresh();
-    toast.success(result.message);
-    // setOpen(false);
-    form.reset();
-  };
+  useEffect(() => {
+    if (!initSearch) {
+      setSearchValue("");
+    }
+  }, [initSearch]);
 
   return (
-    <div className="grid gap-4 py-4">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid gap-2">
-            <div className="grid gap-1">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={form.formState.isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid gap-1">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={form.formState.isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="pt-4">
-              <Button
-                isLoading={form.formState.isSubmitting}
-                disabled={form.formState.isSubmitting}
-              >
-                Create
-              </Button>
-            </div>
-          </div>
-        </form>
-      </Form>
-    </div>
+    <Input
+      className="overflow-visible"
+      type="text"
+      value={searchValue}
+      onChange={(event) => setSearchValue(event.target.value)}
+      placeholder="Search Papers..."
+    />
   );
 }
